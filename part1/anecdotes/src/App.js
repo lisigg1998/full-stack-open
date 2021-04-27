@@ -25,6 +25,7 @@ const MostVote = ({anecdotes, votes}) => {
 }
 
 
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often',
