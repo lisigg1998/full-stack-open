@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import Note from './components/Note'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 
 const App = () => {
   /* State that display info */ 
@@ -15,6 +17,7 @@ const App = () => {
   const [ newPhone, setNewPhone ] = useState('')
   /* State that change filter bar */
   const [ newfilter, setNewFilter ] = useState('')
+  
 
   /* event handler: change name to be written */
   const handleNameChange = (event) => {
@@ -25,11 +28,12 @@ const App = () => {
   const handlePhoneChange = (event) => {
     setNewPhone(event.target.value)
   }
-
   /* event handler: change text to be written, and do filter */
   const handleFilterChange = (event) => {
-    setNewFilter(event.target.value)
+      setNewFilter(event.target.value)
   }
+
+
 
   /* event handler: write info */
   const addInfo = (event) => {
@@ -56,25 +60,12 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        Filter by name: <input value={newfilter} onChange={handleFilterChange}></input>
-      </div>
+      <Filter newfilter={newfilter} handleFilterChange={handleFilterChange}></Filter>
+      
       <h2>Add a Person</h2>
-      <form onSubmit={addInfo}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} /><br></br>
-          phone: <input value={newPhone} onChange={handlePhoneChange}></input>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm submitHandler={addInfo} newName={newName} newPhone={newPhone} handleNameChange={handleNameChange} handlePhoneChange={handlePhoneChange}></PersonForm>
       <h2>Numbers</h2>
-      <ul>
-        {personToShow.map(note => 
-          <Note key={note.name} note={note} />
-        )}
-      </ul>
+      <Persons personToShow={personToShow}></Persons>
     </div>
   )
 }

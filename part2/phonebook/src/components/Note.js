@@ -2,7 +2,13 @@ import React from 'react'
 
 const Note = ({ note }) => {
     return (
-      <li>{note.name}  {note.phone}</li>
+      <tbody>
+        <tr>
+          <td>{note.name}&emsp;</td>
+          <td>{note.phone}</td>
+        </tr>
+      </tbody>
+
     )
   }
 
