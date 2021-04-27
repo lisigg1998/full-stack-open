@@ -7,7 +7,7 @@ const Persons = ({personToShow}) => {
       <table>
 
         {personToShow.map(note => 
-            <Note key={note.name} note={note} />
+            <Note key={note.id} note={note} />
         )}
           
       </table>

@@ -1,16 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import axios from 'axios' 
+
 
 const App = () => {
   /* State that display info */ 
-  const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]) 
+  const [ persons, setPersons ] = useState([]) 
   /* State that change name */
   const [ newName, setNewName ] = useState('')
   /* State that change phone number */
@@ -33,8 +30,6 @@ const App = () => {
       setNewFilter(event.target.value)
   }
 
-
-
   /* event handler: write info */
   const addInfo = (event) => {
     event.preventDefault()
@@ -54,6 +49,15 @@ const App = () => {
     setNewName('')
     setNewPhone('')
   }
+
+  /* Person info initialize */
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
 
   const personToShow = newfilter.length === 0 ? persons : persons.filter((person) => person.name.toLocaleLowerCase().startsWith(newfilter))
 

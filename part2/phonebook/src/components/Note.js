@@ -5,7 +5,7 @@ const Note = ({ note }) => {
       <tbody>
         <tr>
           <td>{note.name}&emsp;</td>
-          <td>{note.phone}</td>
+          <td>{note.number}</td>
         </tr>
       </tbody>
 
