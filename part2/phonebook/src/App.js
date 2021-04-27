@@ -11,7 +11,6 @@ const App = () => {
 
   /* event handler: change info to be written */
   const handleNameChange = (event) => {
-    console.log(event.target.value)
     setNewName(event.target.value)
   }
 
@@ -21,8 +20,12 @@ const App = () => {
     const noteObject = {
       name: newName
     }
-  
-    setPersons(persons.concat(noteObject))
+    const isNewName = persons.findIndex((existName) => existName.name === newName)
+    if( isNewName >= 0){
+      window.alert(`${newName} is already added to phonebook`)
+    }else{
+      setPersons(persons.concat(noteObject))
+    }
     setNewName('')
   }
 
