@@ -39,8 +39,17 @@ const App = () => {
     }
     const isNewName = persons.findIndex((existInfo) => existInfo.name === newName)
     const isNewPhone = persons.findIndex((existInfo) => existInfo.phone === newPhone)
-    if( isNewName >= 0 || isNewPhone >= 0){
-      window.alert(isNewName >= 0 ? `${newName} is already added to phonebook` : `${newPhone} is already added to phonebook`)
+    if( isNewName >= 0 ){
+      if(window.confirm(`${newName} is already added to the phonebook. Want to update the number?`)){
+        const person = persons.find(n => n.name === newName)
+        const changedNote = { ...person, number: newPhone }
+        console.log(changedNote)
+        noteService
+          .update(person.id, changedNote)
+          .then(returnedNote => {
+            setPersons(persons.map((note) => note.id !== person.id ? note : returnedNote))
+          })
+      }
     }else if(newName.length === 0 || newPhone.length === 0){
       window.alert(isNewPhone === '' ? 'Phone number must not be empty!' : 'Name must not be empty!')
     }else{
@@ -52,6 +61,15 @@ const App = () => {
     }
     setNewName('')
     setNewPhone('')
+  }
+
+  /* event handler: delete a note from server */
+  const deleteInfo = (id, name) => () => {
+    if(window.confirm(`Do you want to delete ${name}?`)){
+      noteService
+        .deleteNote(id)
+      setPersons(persons.filter((person) => person.name !== name))
+    }
   }
 
   /* Person info initialize */
@@ -73,7 +91,7 @@ const App = () => {
       <h2>Add a Person</h2>
       <PersonForm submitHandler={addInfo} newName={newName} newPhone={newPhone} handleNameChange={handleNameChange} handlePhoneChange={handlePhoneChange}></PersonForm>
       <h2>Numbers</h2>
-      <Persons personToShow={personToShow}></Persons>
+      <Persons personToShow={personToShow} clickHandler={deleteInfo}></Persons>
     </div>
   )
 }
