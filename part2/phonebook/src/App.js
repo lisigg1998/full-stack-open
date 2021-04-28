@@ -4,6 +4,17 @@ import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import noteService from './services/service'
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="success">
+      {message}
+    </div>
+  )
+}
 
 const App = () => {
   /* State that display info */ 
@@ -14,6 +25,8 @@ const App = () => {
   const [ newPhone, setNewPhone ] = useState('')
   /* State that change filter bar */
   const [ newfilter, setNewFilter ] = useState('')
+  /* State that show success message */
+  const [ successMessage, setSuccessMessage ] = useState(null)
   
 
   /* event handler: change name to be written */
@@ -48,6 +61,8 @@ const App = () => {
           .update(person.id, changedNote)
           .then(returnedNote => {
             setPersons(persons.map((note) => note.id !== person.id ? note : returnedNote))
+            setSuccessMessage(`Successfully changed ${person.name}'s number!`)
+            setTimeout(() => setSuccessMessage(null), 5000)
           })
       }
     }else if(newName.length === 0 || newPhone.length === 0){
@@ -57,6 +72,8 @@ const App = () => {
         .create(noteObject)
         .then(returnedNotes => {
           setPersons(persons.concat(returnedNotes))
+          setSuccessMessage(`Successfully added a new person!`)
+          setTimeout(() => setSuccessMessage(null), 5000)
         })
     }
     setNewName('')
@@ -86,6 +103,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage}></Notification>
       <Filter newfilter={newfilter} handleFilterChange={handleFilterChange}></Filter>
       
       <h2>Add a Person</h2>
