@@ -4,13 +4,13 @@ import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import noteService from './services/service'
 
-const Notification = ({ message }) => {
+const Notification = ({ message, className }) => {
   if (message === null) {
     return null
   }
 
   return (
-    <div className="success">
+    <div className={className}>
       {message}
     </div>
   )
@@ -26,7 +26,9 @@ const App = () => {
   /* State that change filter bar */
   const [ newfilter, setNewFilter ] = useState('')
   /* State that show success message */
-  const [ successMessage, setSuccessMessage ] = useState(null)
+  const [ message, setMessage ] = useState(null)
+  /* State that show error message */
+  const [ messageClass, setMessageClass ] = useState(null)
   
 
   /* event handler: change name to be written */
@@ -61,8 +63,15 @@ const App = () => {
           .update(person.id, changedNote)
           .then(returnedNote => {
             setPersons(persons.map((note) => note.id !== person.id ? note : returnedNote))
-            setSuccessMessage(`Successfully changed ${person.name}'s number!`)
-            setTimeout(() => setSuccessMessage(null), 5000)
+            setMessageClass('success')
+            setMessage(`Successfully changed ${person.name}'s number!`)
+            setTimeout(() => setMessage(null), 5000)
+          })
+          .catch(error => {
+            setMessageClass('error')
+            setMessage(`404 error: ${person.name} has already been deleted!`)
+            setPersons(persons.filter((note) => note.id !== person.id))
+            setTimeout(() => setMessage(null), 5000)
           })
       }
     }else if(newName.length === 0 || newPhone.length === 0){
@@ -72,8 +81,9 @@ const App = () => {
         .create(noteObject)
         .then(returnedNotes => {
           setPersons(persons.concat(returnedNotes))
-          setSuccessMessage(`Successfully added a new person!`)
-          setTimeout(() => setSuccessMessage(null), 5000)
+          setMessageClass('success')
+          setMessage(`Successfully added a new person!`)
+          setTimeout(() => setMessage(null), 5000)
         })
     }
     setNewName('')
@@ -103,7 +113,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage}></Notification>
+      <Notification message={message} className={messageClass}></Notification>
       <Filter newfilter={newfilter} handleFilterChange={handleFilterChange}></Filter>
       
       <h2>Add a Person</h2>
