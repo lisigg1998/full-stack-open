@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import axios from 'axios' 
+import noteService from './services/service'
 
 
 const App = () => {
@@ -30,12 +30,12 @@ const App = () => {
       setNewFilter(event.target.value)
   }
 
-  /* event handler: write info */
+  /* event handler: write info to the browser and server */
   const addInfo = (event) => {
     event.preventDefault()
     const noteObject = {
       name: newName,
-      phone: newPhone
+      number: newPhone
     }
     const isNewName = persons.findIndex((existInfo) => existInfo.name === newName)
     const isNewPhone = persons.findIndex((existInfo) => existInfo.phone === newPhone)
@@ -44,7 +44,11 @@ const App = () => {
     }else if(newName.length === 0 || newPhone.length === 0){
       window.alert(isNewPhone === '' ? 'Phone number must not be empty!' : 'Name must not be empty!')
     }else{
-      setPersons(persons.concat(noteObject))
+      noteService
+        .create(noteObject)
+        .then(returnedNotes => {
+          setPersons(persons.concat(returnedNotes))
+        })
     }
     setNewName('')
     setNewPhone('')
@@ -52,10 +56,10 @@ const App = () => {
 
   /* Person info initialize */
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    noteService
+      .getAll()
+      .then(initialNotes => {
+        setPersons(initialNotes)
       })
   }, [])
 
