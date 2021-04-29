@@ -1,6 +1,19 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 app.use(express.json())
+morgan.token('content', function (req, res) { return JSON.stringify(req.body) !== '{}'? JSON.stringify(req.body) : ''})
+const post_middleware = morgan((tokens, req, res) => {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, 'content-length'), '-',
+      tokens['response-time'](req, res), 'ms',
+      tokens['content'] (req,res)
+    ].join(' ')
+  })
+app.use(post_middleware)
 
 let persons = 
 [
@@ -71,6 +84,7 @@ const generateId = (max, min) => {
     }
     return Id
 }
+
 
 app.post('/api/persons', (req, res) => {
     const body = req.body
